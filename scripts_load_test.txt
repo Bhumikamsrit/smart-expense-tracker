@@ -1,0 +1,5 @@
+# Run with k6 or Locust against the API once deployed.
+# Target: >1,000 accepted transactions/sec with <1% errors.
+#
+# Example k6:
+# k6 run --vus 200 --duration 60s scripts/load_test.js
