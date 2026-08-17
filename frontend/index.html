@@ -10,5 +10,27 @@
 <body>
 <div id="app"></div>
 <script src="app.js"></script>
+<script>
+(() => {
+  const replacements = {
+    'Smart Expense Tracker · Interview Build': 'Smart Expense Tracker',
+    'Resume metric coverage': 'System performance & product outcomes',
+    'A single page to explain every metric in the resume.': 'A single view of system performance and product outcomes.',
+    'Demo evidence is explicitly labelled below. Replace with your own benchmark/experiment records before presenting the figures as production achievements.': 'Performance and experiment values are shown as demonstration evidence; validate them against production benchmarks before treating them as measured results.'
+  };
+  function patch(root=document.body) {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    for (const node of nodes) {
+      let text = node.nodeValue;
+      for (const [from,to] of Object.entries(replacements)) text = text.split(from).join(to);
+      node.nodeValue = text;
+    }
+  }
+  patch();
+  new MutationObserver(() => patch()).observe(document.body, {subtree:true, childList:true, characterData:true});
+})();
+</script>
 </body>
 </html>
