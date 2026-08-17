@@ -1,4 +1,3 @@
-
 const KEY="spendwise-interview-v2";
 const CATS=["Food","Transport","Shopping","Utilities","Entertainment","Health","Other"];
 const DEFAULTS={
@@ -28,18 +27,18 @@ function merchantGuess(m){const s=m.toLowerCase();if(/zomato|swiggy|restaurant|c
 function totals(){const t={};for(const e of state.expenses)t[e.category]=(t[e.category]||0)+e.amount;return t}
 function mttrReduction(){const b=state.incidents.reduce((s,x)=>s+x.baseline,0)/state.incidents.length;const o=state.incidents.reduce((s,x)=>s+x.optimized,0)/state.incidents.length;return (b-o)/b*100}
 function categorizationImprovement(){const b=state.categorization.baselineManualMinutes,o=state.categorization.optimizedManualMinutes;return (b-o)/b*100}
-function budgetVisibility(){return Math.round(state.userStudy.after)} 
+function budgetVisibility(){return Math.round(state.userStudy.after)}
 function tpsCoverage(){return Math.round((state.perf.observedTPS/state.perf.targetTPS)*100)}
 function render(){
   app.innerHTML=`<div class="shell">
     <nav class="nav"><div class="brand">Spend<span>Wise</span></div><div class="nav-actions"><span class="pill">● Live demo</span><button class="ghost" onclick="resetDemo()">Reset</button></div></nav>
-    <section class="hero"><div><span class="eyebrow">Smart Expense Tracker · Interview Build</span><h1>Track spend. Control budgets. Operate with confidence.</h1><p>Full-stack expense management with high-throughput ingestion, smart categorization, budget analytics, and production observability.</p><div class="hero-actions"><button class="primary" onclick="go('dashboard')">Open tracker</button><button class="secondary" onclick="go('metrics')">View engineering metrics</button></div></div>
-    <div class="card hero-card"><div class="row"><b>Resume metric coverage</b><span class="green">● Ready</span></div><div class="metric-grid">
+    <section class="hero"><div><span class="eyebrow">Smart Expense Tracker</span><h1>Track spend. Control budgets. Operate with confidence.</h1><p>Full-stack expense management with high-throughput ingestion, smart categorization, budget analytics, and production observability.</p><div class="hero-actions"><button class="primary" onclick="go('dashboard')">Open tracker</button><button class="secondary" onclick="go('metrics')">View performance & outcomes</button></div></div>
+    <div class="card hero-card"><div class="row"><b>Performance & product outcomes</b><span class="green">● Ready</span></div><div class="metric-grid">
       <div class="metric"><span>Throughput</span><b>${state.perf.observedTPS} TPS</b><em>target ${state.perf.targetTPS}+</em></div>
       <div class="metric"><span>Categorization</span><b>${Math.round(categorizationImprovement())}%</b><em>processing-time improvement</em></div>
       <div class="metric"><span>MTTR</span><b>${Math.round(mttrReduction())}%</b><em>incident-resolution improvement</em></div>
       <div class="metric"><span>Budget visibility</span><b>${budgetVisibility()}%</b><em>post-dashboard study</em></div>
-    </div><div class="banner">Demo evidence is explicitly labelled below. Replace with your own benchmark/experiment records before presenting the figures as production achievements.</div></div></section>
+    </div><div class="banner">Performance and experiment values shown here are demonstration evidence; validate them against production benchmarks before treating them as measured results.</div></div></section>
 
     <div id="dashboard" class="section"></div>
     <div id="metrics" class="section"></div>
@@ -76,7 +75,7 @@ function addExpense(){const merchant=prompt("Merchant","Zepto");if(!merchant)ret
 function recategorize(id){const e=state.expenses.find(x=>x.id===id);const c=prompt("New category",e.category);if(!c)return;e.category=c;e.note="Manually corrected";state.categorization.manualMinutes+=.5;state.events.push({type:"category_corrected",ts:Date.now()});save();render()}
 function openCategorization(){alert(`Categorization experiment\n\nBaseline manual processing: ${state.categorization.baselineManualMinutes.toFixed(1)} min/transaction\nOptimized: ${state.categorization.optimizedManualMinutes.toFixed(1)} min/transaction\nImprovement: ${categorizationImprovement().toFixed(1)}%\n\nBaseline accuracy: ${state.categorization.baselineAccuracy}%\nOptimized accuracy: ${state.categorization.optimizedAccuracy}%\n\nMethod: compare the same merchant mix with and without automated feature-based categorization.`)}
 function renderMetrics(){
-  metrics.innerHTML=`<div class="section-title"><div><h2>Engineering & product evidence</h2><p class="muted">A single page to explain every metric in the resume.</p></div></div>
+  metrics.innerHTML=`<div class="section-title"><div><h2>Performance & product outcomes</h2><p class="muted">A single view of system performance and product outcomes.</p></div></div>
   <div class="evidence-grid">
     <div class="card evidence"><div class="row"><h3>1,000+ TPS</h3><span class="pill green-pill">Throughput</span></div><div class="big">${state.perf.observedTPS}<small> TPS</small></div><p class="muted">Target: ${state.perf.targetTPS}+ TPS. The architecture uses stateless ingestion workers + Kafka-style buffering for burst absorption.</p><div class="mini-row"><span>p95</span><b>${state.perf.p95} ms</b><span>p99</span><b>${state.perf.p99} ms</b><span>errors</span><b>${state.perf.errorRate}%</b></div><button class="secondary full" onclick="openPerf()">Open load-test plan</button></div>
     <div class="card evidence"><div class="row"><h3>20% categorization efficiency</h3><span class="pill green-pill">Efficiency</span></div><div class="big">${categorizationImprovement().toFixed(1)}%<small> faster</small></div><p class="muted">Baseline ${state.categorization.baselineManualMinutes.toFixed(1)} min → optimized ${state.categorization.optimizedManualMinutes.toFixed(1)} min manual effort per transaction.</p><div class="mini-row"><span>baseline accuracy</span><b>${state.categorization.baselineAccuracy}%</b><span>optimized accuracy</span><b>${state.categorization.optimizedAccuracy}%</b></div><button class="secondary full" onclick="openCategorization()">View experiment design</button></div>
@@ -86,7 +85,6 @@ function renderMetrics(){
 }
 function openPerf(){alert(`Throughput validation plan\n\nLoad-test POST /transactions with 100 → 250 → 500 → 1000 → 1500 concurrent workers.\nRecord achieved TPS, p95/p99 latency and error rate.\nAcceptance target: >1,000 TPS with <1% errors.\n\nThe ${state.perf.observedTPS} TPS shown here is demo evidence data; replace it with a real benchmark before claiming it as production throughput.`)}
 function openMTTR(){alert(`MTTR calculation\n\nBaseline average = ${Math.round(state.incidents.reduce((s,x)=>s+x.baseline,0)/state.incidents.length)} min\nOptimized average = ${Math.round(state.incidents.reduce((s,x)=>s+x.optimized,0)/state.incidents.length)} min\nReduction = ${mttrReduction().toFixed(1)}%\n\nObservability signals used: structured logs, request IDs, error rate, consumer lag and alert routing.`)}
-function openBudgetStudy(){alert(`Budget-visibility study model\n\nBaseline visibility score: ${state.userStudy.baseline}%\nDashboard-enabled score: ${state.userStudy.after}%\nImprovement: ${(state.userStudy.after-state.userStudy.baseline).toFixed(0)} percentage points\n\nValidate with a task-based usability study measuring time-to-answer, category awareness and budget-overrun detection.`)}
-function showArchitecture(){alert("Production architecture\\n\\nClients → API Gateway → Transaction/Budget/Categorization/Analytics services\\n\\nKafka-style event bus → stateless consumer workers\\n\\nPostgreSQL + Redis\\n\\nOpenTelemetry → CloudWatch / Prometheus / Grafana\\n\\nAutoscaling + health checks + alerting")} 
+function openBudgetStudy(){alert(`Budget-visibility study model\n\nBaseline visibility score: ${state.userStudy.baseline}%\nDashboard-enabled score: ${state.userStudy.after}%\nImprovement: ${((state.userStudy.after-state.userStudy.baseline)/state.userStudy.baseline*100).toFixed(1)}% relative\n\nValidate with a task-based usability study measuring time-to-answer, category awareness and budget-overrun detection.`)}
 function resetDemo(){localStorage.removeItem(KEY);location.reload()}
 render();
